@@ -2,8 +2,7 @@ import streamlit as st
 from streamlit_option_menu import option_menu 
 import pandas as pd 
 import numpy as np 
-import datetime 
-import pickle
+
 
 # sidebar for navigation
 with st.sidebar:
