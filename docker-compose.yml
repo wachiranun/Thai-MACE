@@ -2,14 +2,14 @@ version: '3'
 
 services:
   https-portal:
-    image: thai_mace/https-portal:1
+    image: steveltn/https-portal:1
     ports:
       - 80:80
       - 443:443
     environment:
       # Redirect my.example.com to https:://letsencrypt.org
       # The upsteams will be available as <%= domain.upstream %> in Nginx config
-      DOMAINS: 'cmanno.in.cmu.ac.th -> https://letsencrypt.org'
+      DOMAINS: '127.0.0.1:8501-> https://cmanno.in.cmu.ac.th/thai_mace'
       STAGE: local
     volumes:
       - https-portal-data:/var/lib/https-portal

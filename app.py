@@ -2,26 +2,44 @@ import streamlit as st
 from streamlit_option_menu import option_menu 
 import pandas as pd 
 import numpy as np 
+import plotly.graph_objs as go
+import pickle
+from sksurv.linear_model import CoxPHSurvivalAnalysis
 
+with open('mace_non_ascvd_model.pkl', 'rb') as f:
+    non_hdl_mace, ldl_mace, bmi_mace = pickle.load(f)
+
+# Define time point prediction
+time_points = np.arange(0, 61)
+
+# Prediction function 
+def prediction_survival(input, model):
+    pred_prob = model.predict_survival_function(input)
+    for i, surv_func in enumerate(pred_prob):
+        pred = surv_func(time_points)
+        # Change to failure probability
+        pred = [1 - x for x in pred]
+        pred_5yr =  (1 - surv_func(60))*100
+    return pred, pred_5yr
 
 # sidebar for navigation
 with st.sidebar:
     
-    selected = option_menu('5-year Major Cardiovascular Event Prediction Model for Thai people Prediction System',
+    selected = option_menu('5-year Major Cardiovascular Event Prediction System for Thai people',
                           
-                          ['Non-established ASCVD patients',
-                           'Established ASCVD patients'],
-                          icons=['activity','heart'],
+                          ['Model using non-HDL cholestoral level',
+                           'Model using LDL cholestoral level',
+                           'Model using body mass index'],
+                          icons=['activity','heart', "exercise"],
                           default_index=0)
     
 # Non-established ASCVD patients Page
-if (selected == 'Non-established ASCVD patients'):
+if (selected == 'Model using non-HDL cholestoral level'):
     
-    st.title("5-year Major Cardiovascular Event Prediction Model for Thai people without established ASCVD")
-    baseline_5yr = 0.993
+    st.title("5-year Major Cardiovascular Event Prediction Model using non-HDL cholestoral level")
     
     
-    def transform_input(AGE,SEX,SMOKE,EGFR,TCOL,HDL,ANY_HTN_MED,ANY_ORAL_DM,INSULIN,ASA,P2Y12,OAC):
+    def transform_input(AGE,SEX,SMOKE,AF,TCOL,HDL,EGFR,ANY_HTN_MED,ANY_ORAL_DM,INSULIN):
         NON_HDL = TCOL - HDL
         
         if SEX == 'ชาย':
@@ -49,21 +67,13 @@ if (selected == 'Non-established ASCVD patients'):
         else:
             INSULIN = 0
     
-        if ASA == 'ใช่':
-            ASA = 1
+        if AF == 'ใช่':
+            AF = 1
         else:
-            ASA = 0
+            AF = 0
             
-        if P2Y12 == 'ใช่':
-            P2Y12 = 1
-        else:
-            P2Y12 = 0
-    
-        if OAC == 'ใช่':
-            OAC = 1
-        else:
-            OAC = 0
-        return AGE,SEX,SMOKE,EGFR,TCOL,HDL,NON_HDL,ANY_HTN_MED,ANY_ORAL_DM,INSULIN,ASA,P2Y12,OAC
+
+        return [AGE,SEX,SMOKE,AF,NON_HDL,EGFR,ANY_HTN_MED,ANY_ORAL_DM,INSULIN]
     
         
     with st.form('my_form'):
@@ -71,6 +81,7 @@ if (selected == 'Non-established ASCVD patients'):
         AGE =  st.slider('อายุ (ปี)',45, 120)
         SEX = st.selectbox('เพศ', ['ชาย', 'หญิง'])    
         SMOKE = st.selectbox('สูบบุหรี่', ['ไม่สูบ', 'สูบ'])
+        AF = st.selectbox('ได้รับการวินิจฉัยโรคหัวใจห้องบนเต้นผิดจังหวะ (Atrial Fibrilation)', ['ไม่ใช่', 'ใช่'])
         st.write("ผลการตรวจทางห้องปฏิบัติการณ์")
         EGFR = st.slider('Estimated glomerular filtration rate (%)',0, 100)
         TCOL = st.slider('Total cholesterol (mg/dL)',0, 1000)
@@ -79,18 +90,46 @@ if (selected == 'Non-established ASCVD patients'):
         ANY_HTN_MED = st.selectbox('รับประทานยาลดความดันโลหิต', ['ไม่ใช่', 'ใช่'])
         ANY_ORAL_DM = st.selectbox('รับประทานยาเพื่อควบคุมระดับน้ำตาลในเลือด', ['ไม่ใช่', 'ใช่'])
         INSULIN = st.selectbox('ใช้ยาฉีดอินซูลินเพื่อควบคุมระดับน้ำตาลในเลือด', ['ไม่ใช่', 'ใช่'])
-        ASA = st.selectbox('รับประทานยาต้านการทำงานของเกล็ดเลือดในกลุ่ม Aspirin', ['ไม่ใช่', 'ใช่'])
-        P2Y12 = st.selectbox('รับประทานยาต้านการทำงานของเกล็ดเลือดในกลุ่ม P2Y12', ['ไม่ใช่', 'ใช่'])
-        OAC = st.selectbox('รับประทานยาละลายลิ่มเลือด (Anticogulants) เช่น Warfarin', ['ไม่ใช่', 'ใช่'])
         
         if st.form_submit_button('Predict'):
             
-            AGE,SEX,SMOKE,EGFR,TCOL,HDL,NON_HDL,ANY_HTN_MED,ANY_ORAL_DM,INSULIN,ASA,P2Y12,OAC = transform_input(AGE,SEX,SMOKE,EGFR,TCOL,HDL,ANY_HTN_MED,ANY_ORAL_DM,INSULIN,ASA,P2Y12,OAC)
-            pi_5 = (0.040*AGE) - (0.047*SEX) + (0.003*NON_HDL) + (0.323*SMOKE) - (0.014*SMOKE*5) - (0.022*EGFR) + (0.0002*EGFR*5) + (1.257*ANY_HTN_MED) - (0.376*ANY_ORAL_DM) + (0.351*INSULIN) + (0.558*ASA) + (0.541*P2Y12) + (1.405*OAC)
-            mace_5yr = 1 - baseline_5yr**np.exp(pi_5)
-            mace_5yr_prop = format(mace_5yr*100,".2f")
+            input_tranfrom = transform_input(AGE,SEX,SMOKE,AF,TCOL,HDL,EGFR,ANY_HTN_MED,ANY_ORAL_DM,INSULIN)
+
+            new_prediction = pd.DataFrame.from_dict({1:input_tranfrom}, columns=["AGE","SEX","SMOKE","AF","Non_HDL","EGFR","ANY_HTN_MED","ANY_ORAL_DM","INSULIN"], orient='index')
+
+            pred, pred_5yr = prediction_survival(new_prediction, non_hdl_mace)
+            mace_5yr_prop = format(pred_5yr,".2f")
             text = "5-year MACE probability: " + str(mace_5yr_prop) + " %"
             st.success(text, icon="💔")
+            
+            fig = go.Figure([
+                go.Scatter(
+                    name='3P-MACE probability (%)',
+                    x=time_points,
+                    y=pred,
+                    mode='lines',
+                    line=dict(color='#D04848'),
+                    fill='tonexty'
+                )
+            ])
+            fig.update_layout(
+                yaxis_title='3P-MACE probability (%)',
+                xaxis_title="Months",
+                title='5-year Major Cardiovascular Event Prediction',
+                hovermode="x",
+                yaxis_tickformat = '.2%',
+                xaxis = dict(
+                    tickmode = 'array',
+                    tickvals = [0, 12, 24, 36, 48, 60],
+                    ticktext = ['Baseline','1 year', '2 year', '3 year', '4 year', '5 year']),
+                font=dict(
+                size=15,
+                color="RebeccaPurple"),
+            )
+
+            event = st.plotly_chart(fig, on_select="rerun")
+
+            
 
 # Established ASCVD patients Page
 if (selected == 'Established ASCVD patients'):
