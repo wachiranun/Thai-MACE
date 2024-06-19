@@ -13,6 +13,7 @@ with open('mace_non_ascvd_model.pkl', 'rb') as f:
 image = Image.open('./images/mace_app_banner.png')
 st.image(image, use_column_width ="always" )
 
+
 # Define time point prediction
 time_points = np.arange(0, 61)
 
@@ -37,6 +38,17 @@ with st.sidebar:
                           icons=['activity','heart', 'balloon'],
                           default_index=0)
     
+    st.markdown(
+        """
+    <style>
+    .sidebar .sidebar-content {
+        background-image: linear-gradient(#2e7bcf,#2e7bcf);
+        color: white;
+    }
+    </style>
+    """,
+        unsafe_allow_html=True,
+    )
     
 # Model using non-HDL cholestoral level
 if (selected == 'Model using Non-HDL Cholestoral Level'):
@@ -83,7 +95,7 @@ if (selected == 'Model using Non-HDL Cholestoral Level'):
         
     with st.form('my_form'):
         st.write("ข้อมูลพื้นฐาน")
-        AGE =  st.slider('อายุ (ปี)',45, 120)
+        AGE =  st.slider('อายุ (ปี)',20, 120)
         SEX = st.selectbox('เพศ', ['ชาย', 'หญิง'])    
         SMOKE = st.selectbox('สูบบุหรี่', ['ไม่สูบ', 'สูบ'])
         AF = st.selectbox('ได้รับการวินิจฉัยโรคหัวใจห้องบนเต้นผิดจังหวะ (Atrial Fibrilation)', ['ไม่ใช่', 'ใช่'])
@@ -180,7 +192,7 @@ if (selected == 'Model using LDL Cholestoral Level'):
         
     with st.form('my_form'):
         st.write("ข้อมูลพื้นฐาน")
-        AGE =  st.slider('อายุ (ปี)',45, 120)
+        AGE =  st.slider('อายุ (ปี)',20, 120)
         SEX = st.selectbox('เพศ', ['ชาย', 'หญิง'])    
         SMOKE = st.selectbox('สูบบุหรี่', ['ไม่สูบ', 'สูบ'])
         AF = st.selectbox('ได้รับการวินิจฉัยโรคหัวใจห้องบนเต้นผิดจังหวะ (Atrial Fibrilation)', ['ไม่ใช่', 'ใช่'])
@@ -275,7 +287,7 @@ if (selected == 'Model using Body Mass Index'):
         
     with st.form('my_form'):
         st.write("ข้อมูลพื้นฐาน")
-        AGE =  st.slider('อายุ (ปี)',45, 120)
+        AGE =  st.slider('อายุ (ปี)',20, 120)
         SEX = st.selectbox('เพศ', ['ชาย', 'หญิง'])    
         SMOKE = st.selectbox('สูบบุหรี่', ['ไม่สูบ', 'สูบ'])
         AF = st.selectbox('ได้รับการวินิจฉัยโรคหัวใจห้องบนเต้นผิดจังหวะ (Atrial Fibrilation)', ['ไม่ใช่', 'ใช่'])
@@ -322,3 +334,13 @@ if (selected == 'Model using Body Mass Index'):
             )
 
             event = st.plotly_chart(fig, on_select="rerun")
+
+css="""
+<style>
+    [data-testid="stForm"] {
+        background: #FFFBEE;
+    }
+</style>
+"""
+
+st.write(css, unsafe_allow_html=True)
