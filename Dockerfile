@@ -1,7 +1,6 @@
 # app/Dockerfile
 
 FROM python:3.12.4-bookworm
-
 WORKDIR /thai_mace
 
 RUN apt-get update && apt-get install -y \
