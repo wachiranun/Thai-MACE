@@ -2,7 +2,7 @@ streamlit
 streamlit_option_menu
 pandas
 numpy
-plotly
-pickle
+plotly==5.22.0
+pickle==4.0
 sksurv
 PIL

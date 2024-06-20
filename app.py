@@ -3,7 +3,7 @@ from streamlit_option_menu import option_menu
 import pandas as pd 
 import numpy as np 
 import plotly.graph_objs as go
-import pickle
+import pickle5 as pickle
 from sksurv.linear_model import CoxPHSurvivalAnalysis
 from PIL import Image
 
