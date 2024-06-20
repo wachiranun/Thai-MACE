@@ -338,7 +338,7 @@ if (selected == 'Model using Body Mass Index'):
 css="""
 <style>
     [data-testid="stForm"] {
-        background: #FFFBEE;
+        background: #;
     }
 </style>
 """
