@@ -1,6 +1,6 @@
 # app/Dockerfile
 
-FROM python:3.12
+FROM python:3.12.4-bookworm
 
 WORKDIR /thai_mace
 
