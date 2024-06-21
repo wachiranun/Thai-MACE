@@ -7,6 +7,6 @@ joblib
 numexpr
 osqp
 scikit-learn
-PIL
-sksurv
-plotly
+Pillow
+sksurv==0.22.2
+plotly==5.22.0
