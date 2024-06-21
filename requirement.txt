@@ -7,3 +7,6 @@ joblib
 numexpr
 osqp
 scikit-learn
+PIL
+sksurv
+plotly
