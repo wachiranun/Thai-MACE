@@ -16,6 +16,8 @@ RUN pip install --upgrade pip
 
 RUN pip3 install -r requirement.txt
 
+RUN pip3 install -r requirement2.txt
+
 EXPOSE 8501
 
 HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
