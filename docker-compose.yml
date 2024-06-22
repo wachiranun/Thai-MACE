@@ -1,20 +1,25 @@
-version: '3'
-
+version: '3.8'
 services:
-  https-portal:
-    image: steveltn/https-portal:1
+  app:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
     ports:
-      - 80:80
-      - 443:443
-    environment:
-      # Redirect my.example.com to https:://letsencrypt.org
-      # The upsteams will be available as <%= domain.upstream %> in Nginx config
-      DOMAINS: '127.0.0.1:8501-> https://cmanno.in.cmu.ac.th/thai_mace'
-      STAGE: local
-    volumes:
-      - https-portal-data:/var/lib/https-portal
-      - ./nginx-conf/cmanno.in.cmu.ac.th.conf.erb:/var/lib/nginx-conf/cmanno.in.cmu.ac.th.conf.erb:ro
-      - ./nginx-conf/cmanno.in.cmu.ac.th.ssl.conf.erb:/var/lib/nginx-conf/cmanno.in.cmu.ac.th.ssl.conf.erb:ro
+      # These ports are in format <host-port>:<container-port>
+      - '80:80' # Public HTTP Port
+      - '443:443' # Public HTTPS Port
+      - '81:81' # Admin Web Port
+      # Add any other Stream port you want to exposed
+      # - '21:21' # FTP
 
-volumes:
-  https-portal-data:
+    # Uncomment the next line if you uncomment anything in the section
+    # environment:
+      # Uncomment this if you want to change the location of
+      # the SQLite DB file within the container
+      # DB_SQLITE_FILE: "/data/database.sqlite"
+
+      # Uncomment this if IPv6 is not enabled on your host
+      # DISABLE_IPV6: 'true'
+
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
