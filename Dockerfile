@@ -14,7 +14,7 @@ RUN git clone https://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@github.com/wachir
 
 RUN pip install --upgrade pip
 
-RUN pip install -r requirement.txt
+RUN pip3 install -r requirement.txt
 
 EXPOSE 8501
 
