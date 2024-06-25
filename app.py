@@ -5,7 +5,6 @@ import plotly.graph_objs as go
 import pickle
 from sksurv.linear_model import CoxPHSurvivalAnalysis
 from PIL import Image
-import time
 
 with open('mace_non_ascvd_model.pkl', 'rb') as f:
     non_hdl_mace, ldl_mace, bmi_mace = pickle.load(f)
@@ -34,6 +33,7 @@ with st.sidebar:
     check1 = st.sidebar.button('Model using Non-HDL Cholestoral Level')
     check2 = st.sidebar.button('Model using LDL Cholestoral Level')
     check3 = st.sidebar.button('Model using Body Mass Index')               
+    
 
 welcome_text = """
 👈 _Please select model for :red[your prediction]_ 
@@ -326,12 +326,3 @@ if check3:
 
             event = st.plotly_chart(fig, on_select="rerun")
 
-css="""
-<style>
-    [data-testid="stForm"] {
-        background: #;
-    }
-</style>
-"""
-
-st.write(css, unsafe_allow_html=True)

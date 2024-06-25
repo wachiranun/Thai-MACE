@@ -1,12 +1,7 @@
 streamlit
-streamlit-option-menu
 pandas
 numpy
-ecos
-joblib
-numexpr
-osqp
 scikit-learn
 scikit-survival
-plotly==5.22.0
-Pillow==10.2.0
+plotly
+Pillow
