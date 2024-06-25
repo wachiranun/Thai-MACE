@@ -1,11 +1,11 @@
 import streamlit as st 
-from streamlit_option_menu import option_menu 
 import pandas as pd 
 import numpy as np 
 import plotly.graph_objs as go
 import pickle
 from sksurv.linear_model import CoxPHSurvivalAnalysis
 from PIL import Image
+import time
 
 with open('mace_non_ascvd_model.pkl', 'rb') as f:
     non_hdl_mace, ldl_mace, bmi_mace = pickle.load(f)
@@ -29,32 +29,24 @@ def prediction_survival(input, model):
 
 # sidebar for navigation
 with st.sidebar:
-    
-    selected = option_menu('5-year Major Cardiovascular Event Prediction System for Thai people',
-                          
-                          ['Model using Non-HDL Cholestoral Level',
-                           'Model using LDL Cholestoral Level',
-                           'Model using Body Mass Index'],
-                          icons=['activity','heart', 'balloon'],
-                          default_index=0)
-    
-    st.markdown(
-        """
-    <style>
-    .sidebar .sidebar-content {
-        background-image: linear-gradient(#2e7bcf,#2e7bcf);
-        color: white;
-    }
-    </style>
-    """,
-        unsafe_allow_html=True,
-    )
+    st.title('5-year Major Cardiovascular Event 🫀 Prediction System for Thai people')
+    st.header("Click on the buttons below")
+    check1 = st.sidebar.button('Model using Non-HDL Cholestoral Level')
+    check2 = st.sidebar.button('Model using LDL Cholestoral Level')
+    check3 = st.sidebar.button('Model using Body Mass Index')               
+
+welcome_text = """
+👈 _Please select model for :red[your prediction]_ 
+\n 
+"""
+
+if check1 == False or check2 == False or check3 == False:
+    st.header(welcome_text, divider = "grey" )
     
 # Model using non-HDL cholestoral level
-if (selected == 'Model using Non-HDL Cholestoral Level'):
+if check1:
     
     st.header("Model using Non-HDL Cholestoral Level")
-    
     
     def transform_input(AGE,SEX,SMOKE,AF,TCOL,HDL,EGFR,ANY_HTN_MED,ANY_ORAL_DM,INSULIN):
         NON_HDL = TCOL - HDL
@@ -89,7 +81,6 @@ if (selected == 'Model using Non-HDL Cholestoral Level'):
         else:
             AF = 0
             
-
         return [AGE,SEX,SMOKE,AF,NON_HDL,EGFR,ANY_HTN_MED,ANY_ORAL_DM,INSULIN]
     
         
@@ -148,7 +139,7 @@ if (selected == 'Model using Non-HDL Cholestoral Level'):
 
 
 # Model using LDL cholestoral level
-if (selected == 'Model using LDL Cholestoral Level'):
+if check2:
     
     st.header("Model using LDL Cholestoral Level")
     
@@ -243,7 +234,7 @@ if (selected == 'Model using LDL Cholestoral Level'):
             event = st.plotly_chart(fig, on_select="rerun")
 
 # Model using BMI
-if (selected == 'Model using Body Mass Index'):
+if check3:
     
     st.header("Model using Body Mass Index")
     
