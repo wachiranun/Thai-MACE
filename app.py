@@ -1,4 +1,5 @@
 import streamlit as st 
+from streamlit_option_menu import option_menu
 import pandas as pd 
 import numpy as np 
 import plotly.graph_objs as go
@@ -28,23 +29,28 @@ def prediction_survival(input, model):
 
 # sidebar for navigation
 with st.sidebar:
-    st.title('5-year Major Cardiovascular Event 🫀 Prediction System for Thai people')
-    st.header("Click on the buttons below")
-    check1 = st.sidebar.button('Model using Non-HDL Cholestoral Level')
-    check2 = st.sidebar.button('Model using LDL Cholestoral Level')
-    check3 = st.sidebar.button('Model using Body Mass Index')               
     
-
-welcome_text = """
-👈 _Please select model for :red[your prediction]_ 
-\n 
-"""
-
-if check1 == False or check2 == False or check3 == False:
-    st.header(welcome_text, divider = "grey" )
+    selected = option_menu('5-year Major Cardiovascular Event Prediction System for Thai people',
+                          
+                          ['Model using Non-HDL Cholestoral Level',
+                           'Model using LDL Cholestoral Level',
+                           'Model using Body Mass Index'],
+                          icons=['activity','heart', 'balloon'],
+                          default_index=0)
+    
+    st.markdown(
+        """
+    <style>
+    .sidebar .sidebar-content {
+        background-image: linear-gradient(#2e7bcf,#2e7bcf);
+        color: white;
+    }
+    </style>
+    """, unsafe_allow_html=True
+    )
     
 # Model using non-HDL cholestoral level
-if check1:
+if (selected == "Model using Non-HDL Cholestoral Level"):
     
     st.header("Model using Non-HDL Cholestoral Level")
     
@@ -139,7 +145,7 @@ if check1:
 
 
 # Model using LDL cholestoral level
-if check2:
+if (selected == "Model using LDL Cholestoral Level"):
     
     st.header("Model using LDL Cholestoral Level")
     
@@ -234,7 +240,7 @@ if check2:
             event = st.plotly_chart(fig, on_select="rerun")
 
 # Model using BMI
-if check3:
+if (selected == "Model using Body Mass Index"):
     
     st.header("Model using Body Mass Index")
     
