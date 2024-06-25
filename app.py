@@ -13,6 +13,7 @@ with open('mace_non_ascvd_model.pkl', 'rb') as f:
 image = Image.open('./images/mace_app_banner.png')
 st.image(image, use_column_width ="always" )
 
+logo = './images/slidebar_button.png'
 
 # Define time point prediction
 time_points = np.arange(0, 61)
@@ -28,6 +29,7 @@ def prediction_survival(input, model):
     return pred, pred_5yr
 
 # sidebar for navigation
+st.logo(logo, icon_image=logo)
 with st.sidebar:
     
     selected = option_menu('5-year Major Cardiovascular Event Prediction System for Thai people',
@@ -38,17 +40,9 @@ with st.sidebar:
                           icons=['activity','heart', 'balloon'],
                           default_index=0)
     
-    st.markdown(
-        """
-    <style>
-    .sidebar .sidebar-content {
-        background-image: linear-gradient(#2e7bcf,#2e7bcf);
-        color: white;
-    }
-    </style>
-    """, unsafe_allow_html=True
-    )
-    
+
+
+
 # Model using non-HDL cholestoral level
 if (selected == "Model using Non-HDL Cholestoral Level"):
     
