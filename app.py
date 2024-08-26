@@ -68,7 +68,16 @@ stations = {"th": ['เลือกโมเดลที่ใช้ในกา
                     'โอกาสเกิดเหตุการณ์ใน 5 ปี (%)',
                     'เดือน',
                     'ผลการทำนายโอกาสเกิดเหตุการณ์ชนิดรุนแรงจากสาเหตุหัวใจและหลอดเลือดใน 5 ปี',
-                    ['ปัจจุบัน','1 ปี', '2 ปี', '3 ปี', '4 ปี', '5 ปี']], 
+                    ['ปัจจุบัน','1 ปี', '2 ปี', '3 ปี', '4 ปี', '5 ปี'],
+                    """
+                    **การแบ่งกลุ่มผู้ป่วยตามความเสี่ยงในการเกิดเหตุการณ์ชนิดรุนแรงจากสาเหตุหัวใจและหลอดเลือดใน 5 ปี \n
+                    :green[กลุ่มเสี่ยงต่ำ (<2.8%)] \n
+                    กลุ่มเสี่ยงปานกลาง (2.8% to 5.3%) \n
+                    :orange[กลุ่มเสี่ยง (5.4% to 9.9%)] \n
+                    :red[กลุ่มเสี่ยงสูง (≥10%)] \n
+                    แนะนำให้ใช้โมเดลเพื่อทำนายการเกิดเหตุการณ์ชนิดรุนแรงจากสาเหตุหัวใจและหลอดเลือดใน 5 ปี \n
+                    สำหรับ _กลุ่มผู้ป่วยอายุ 45-98 ปี ที่มีปัจจัยเสี่ยงของการเกิดโรคหลอดเลือดหัวใจและสมอง_
+                    """], 
             "en":['Model Selection',       
                  ['Model using Non-HDL Cholestoral Level','Model using LDL Cholestoral Level','Model using Body Mass Index'],
                   'Unit of laboratory measurements',
@@ -107,7 +116,16 @@ stations = {"th": ['เลือกโมเดลที่ใช้ในกา
                   '3P-MACE probability (%)',
                   'months',
                   "Predicted 5-year Major Cardiovascular Events",
-                  ['Baseline','1 year', '2 year', '3 year', '4 year', '5 year']]}
+                  ['Baseline','1 year', '2 year', '3 year', '4 year', '5 year'],
+                  """
+                  **5-year MACE probability is categorized as: \n
+                    :green[Low-risk (<2.8%)] \n
+                    Borderline risk (2.8% to 5.3%) \n
+                    :orange[Intermediate risk (5.4% to 9.9%)] \n
+                    :red[High risk (≥10%)] \n
+                    Recommended to use the models to predict 5-year MACE probability \n
+                    for _patients age 45–98 with multiple risk factors for ASCVD_
+                    """]}
 
 index_stations = ['label_model_select', 'choice_model_select',
                   'label_unit_op','choice_unit_op','label_kid_op','choice_kid_op',
@@ -116,11 +134,9 @@ index_stations = ['label_model_select', 'choice_model_select',
                   'label_bmi', 'label_bw', 'label_ht', 'label_bmi_pred',
                   'label_lab', 'label_egfr', 'label_cr', 'label_tc', 'label_hdl', 'label_ldl', 'label_ldl_pred','label_nonhdl_pred', 'label_egfr_pred',
                   'label_med', 'label_htn_med', 'label_dm_med', 'label_insulin_med',
-                  'label_pred','pred_text','yaxis_title', "xaxis_title", "title", "xtick"]
+                  'label_pred','pred_text','yaxis_title', "xaxis_title", "title", "xtick","text_caption"]
 
 df_stations = pd.DataFrame(data=stations, index = index_stations)
-
-
 
 
 # sidebar for navigation
@@ -514,4 +530,7 @@ elif (selected == "Model using Body Mass Index" or selected =="โมเดล�
             )
 
             event = st.plotly_chart(fig, on_select="rerun")
+
+
+st.caption(label.text_caption)
 
