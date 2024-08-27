@@ -51,14 +51,14 @@ stations = {"th": ['เลือกโมเดลที่ใช้ในกา
                    'ส่วนสูง (cm)',
                    "ค่าดัชนีมวลกาย (BMI, kg/m2) ที่ใช้ในการทำนาย:",
                    'ผลการตรวจทางห้องปฏิบัติการ',
-                   'ค่าการทำงานของไต Estimated Glomerular Filtration Rate, (%)',
+                   'ค่าการทำงานของไต Estimated Glomerular Filtration Rate, (mL/min/1.73m2)',
                    'ค่าครีตินีน Creatinine',
                     'ไขมันคอเลสเตอรอล Total cholesterol',
                     'ไขมันคอเลสเตอรอลชนิดดี HDL cholesterol',
                     'ไขมันคอเลสเตอรอลชนิดเลว LDL cholesterol',
                     'ค่าไขมันคอเลสเตอรอลชนิดเลว (LDL, mg/dl) ที่ใช้ในการทำนาย:',
                     'ค่าไขมันคอเลสเตอรอลที่ไม่ใช่ชนิดดี (non-HDL, mg/dl) ที่ใช้ในการทำนาย:',
-                    'ค่าการทำงานของไต (eGFR, %) ที่ใช้ในการทำนาย:',
+                    'ค่าการทำงานของไต (eGFR, mL/min/1.73m2) ที่ใช้ในการทำนาย:',
                     'ประวัติการใช้ยา',
                     'รับประทานยาลดความดันโลหิต',
                     'รับประทานยาเพื่อควบคุมระดับน้ำตาลในเลือด',
@@ -77,7 +77,11 @@ stations = {"th": ['เลือกโมเดลที่ใช้ในกา
                     :red[กลุ่มเสี่ยงสูง (≥10%)] \n
                     แนะนำให้ใช้โมเดลเพื่อทำนายการเกิดเหตุการณ์ชนิดรุนแรงจากสาเหตุหัวใจและหลอดเลือดใน 5 ปี \n
                     สำหรับ _กลุ่มผู้ป่วยอายุ 45-98 ปี ที่มีปัจจัยเสี่ยงของการเกิดโรคหลอดเลือดหัวใจและสมอง_
-                    """], 
+                    """,
+                    "กลุ่มเสี่ยงต่ำ (<2.8%)",
+                    "กลุ่มเสี่ยงปานกลาง (2.8% to 5.3%)",
+                    "กลุ่มเสี่ยง (5.4% to 9.9%)",
+                    "กลุ่มเสี่ยงสูง (≥10%)"], 
             "en":['Model Selection',       
                  ['Model using Non-HDL Cholestoral Level','Model using LDL Cholestoral Level','Model using Body Mass Index'],
                   'Unit of laboratory measurements',
@@ -99,14 +103,14 @@ stations = {"th": ['เลือกโมเดลที่ใช้ในกา
                   'Height (cm)',
                   'Body Mass Index (kg/m2) using for prediction:',
                   'Laboratory Tests',
-                  'Estimated Glomerular Filtration Rate (%)',
+                  'Estimated Glomerular Filtration Rate (mL/min/1.73m2)',
                   'Creatinine',
                   'Total Cholesterol',
                   'HDL Cholesterol',
                   'LDL Cholesterol',
                   'LDL Cholesterol (mg/dl) using for prediction:',
                   'Non-HDL Cholesterol (mg/dl) using for prediction:',
-                  'eGFR (%) using for prediction:',
+                  'eGFR (mL/min/1.73m2) using for prediction:',
                   'Medication History',
                   'On Hypertension Treatment?',
                   'On Oral Diabetes Treatment?',
@@ -125,7 +129,11 @@ stations = {"th": ['เลือกโมเดลที่ใช้ในกา
                     :red[High risk (≥10%)] \n
                     Recommended to use the models to predict 5-year MACE probability \n
                     for _patients age 45–98 with multiple risk factors for ASCVD_
-                    """]}
+                    """,
+                    "Low-risk (<2.8%)",
+                    "Borderline risk (2.8% to 5.3%)",
+                    "Intermediate risk (5.4% to 9.9%)",
+                    "High risk (≥10%)"]}
 
 index_stations = ['label_model_select', 'choice_model_select',
                   'label_unit_op','choice_unit_op','label_kid_op','choice_kid_op',
@@ -134,7 +142,8 @@ index_stations = ['label_model_select', 'choice_model_select',
                   'label_bmi', 'label_bw', 'label_ht', 'label_bmi_pred',
                   'label_lab', 'label_egfr', 'label_cr', 'label_tc', 'label_hdl', 'label_ldl', 'label_ldl_pred','label_nonhdl_pred', 'label_egfr_pred',
                   'label_med', 'label_htn_med', 'label_dm_med', 'label_insulin_med',
-                  'label_pred','pred_text','yaxis_title', "xaxis_title", "title", "xtick","text_caption"]
+                  'label_pred','pred_text','yaxis_title', "xaxis_title", "title", "xtick",
+                  "text_caption","low_risk","borderline_risk","intermediate_risk","high_risk"]
 
 df_stations = pd.DataFrame(data=stations, index = index_stations)
 
@@ -213,15 +222,15 @@ if (selected == "Model using Non-HDL Cholestoral Level" or selected =='โมเ
         AF = st.selectbox(label.label_af, label.choice_yesno)
         st.write(label.label_lab)
         if kidney_option == "ค่าการทำงานของไต (eGFR)"  or kidney_option == 'eGFR':
-            EGFR = st.slider(label.label_egfr, 0.00, 100.00, 50.00)
+            EGFR = st.slider(label.label_egfr, 0.00, 200.00, 50.00)
                 
         elif kidney_option == "ครีตินีน (Creatinine)" or kidney_option == "Creatinine":
             if unit_option == "หน่วยวัด US" or unit_option == "US unit":
                 unit = 'mg/dl'
-                CR = st.slider(f'{label.label_cr}, ({unit})', 0.00, 3.00, 0.60)
+                CR = st.slider(f'{label.label_cr}, ({unit})', 0.00, 15.00, 0.60)
             elif unit_option == "หน่วยวัด SI" or unit_option == "SI unit":
                 unit = 'mmol/L'
-                CR_si = st.slider(f'{label.label_cr}, ({unit})', 0.000, 0.166, 0.033)
+                CR_si = st.slider(f'{label.label_cr}, ({unit})', 0.000, 0.832, 0.033)
                 CR = CR_si/0.0555
             
             if (SEX == "หญิง" or SEX == 'Female') and CR <= 0.7:
@@ -240,12 +249,12 @@ if (selected == "Model using Non-HDL Cholestoral Level" or selected =='โมเ
 
         if unit_option == "หน่วยวัด US" or unit_option == "US unit":
             unit = 'mg/dl'
-            TCOL = st.slider(f'{label.label_tc}, ({unit})',0, 400, 150)
+            TCOL = st.slider(f'{label.label_tc}, ({unit})',0, 600, 150)
             HDL = st.slider(f'{label.label_hdl}, ({unit})',0, 200, 50)
         elif unit_option == "หน่วยวัด SI" or unit_option == "SI unit":
             unit = 'mmol/L'
-            TCOL_si = st.slider(f'{label.label_tc}, ({unit})',0.000, 22.222, 8.000)
-            HDL_si = st.slider(f'{label.label_hdl}, ({unit})',0.000, 11.111, 3.300)
+            TCOL_si = st.slider(f'{label.label_tc}, ({unit})',0.000, 33.30, 8.000)
+            HDL_si = st.slider(f'{label.label_hdl}, ({unit})',0.000, 11.10, 3.300)
             TCOL = TCOL_si/0.0555
             HDL = HDL_si/0.0555
 
@@ -263,7 +272,21 @@ if (selected == "Model using Non-HDL Cholestoral Level" or selected =='โมเ
 
             pred, pred_5yr = prediction_survival(new_prediction, non_hdl_mace)
             mace_5yr_prop = format(pred_5yr,".2f")
-            text = label.pred_text + str(mace_5yr_prop) + " %"
+
+            if pred_5yr < 2.80:
+                label_risk = label.low_risk
+            if pred_5yr >= 2.80 and pred_5yr < 5.40:
+                label_risk = label.borderline_risk
+            if pred_5yr >= 5.40 and pred_5yr < 10.00:
+                label_risk = label.intermediate_risk
+            if pred_5yr >= 10.00:
+                label_risk = label.high_risk
+
+            text = f"""
+            {label.pred_text}{str(mace_5yr_prop)}% \n
+            {label_risk}
+            """
+
             st.success(text, icon="💔")
             
             fig = go.Figure([
@@ -350,15 +373,15 @@ elif (selected == "Model using LDL Cholestoral Level" or selected == "โมเ�
         AF = st.selectbox(label.label_af, label.choice_yesno)
         st.write(label.label_lab)
         if kidney_option == "ค่าการทำงานของไต (eGFR)"  or kidney_option == 'eGFR':
-            EGFR = st.slider(label.label_egfr, 0.00, 100.00, 50.00)
+            EGFR = st.slider(label.label_egfr, 0.00, 200.00, 50.00)
                 
         elif kidney_option == "ครีตินีน (Creatinine)" or kidney_option == "Creatinine":
             if unit_option == "หน่วยวัด US" or unit_option == "US unit":
                 unit = 'mg/dl'
-                CR = st.slider(f'{label.label_cr}, ({unit})', 0.00, 3.00, 0.60)
+                CR = st.slider(f'{label.label_cr}, ({unit})', 0.00, 15.00, 0.60)
             elif unit_option == "หน่วยวัด SI" or unit_option == "SI unit":
                 unit = 'mmol/L'
-                CR_si = st.slider(f'{label.label_cr}, ({unit})', 0.000, 0.166, 0.033)
+                CR_si = st.slider(f'{label.label_cr}, ({unit})', 0.000, 0.832, 0.033)
                 CR = CR_si/0.0555
             
             if (SEX == "หญิง" or SEX == 'Female') and CR <= 0.7:
@@ -377,10 +400,10 @@ elif (selected == "Model using LDL Cholestoral Level" or selected == "โมเ�
 
         if unit_option == "หน่วยวัด US" or unit_option == "US unit":
             unit = 'mg/dl'
-            LDL = st.slider(f'{label.label_ldl}, ({unit})',0, 400, 150)
+            LDL = st.slider(f'{label.label_ldl}, ({unit})',0, 600, 150)
         elif unit_option == "หน่วยวัด SI" or unit_option == "SI unit":
             unit = 'mmol/L'
-            LDL_si = st.slider(f'{label.label_ldl}, ({unit})',0.000, 22.222, 8.000)
+            LDL_si = st.slider(f'{label.label_ldl}, ({unit})',0.000, 33.30, 8.324)
             LDL = LDL_si/0.0555
 
 
@@ -399,7 +422,21 @@ elif (selected == "Model using LDL Cholestoral Level" or selected == "โมเ�
 
             pred, pred_5yr = prediction_survival(new_prediction, ldl_mace)
             mace_5yr_prop = format(pred_5yr,".2f")
-            text = label.pred_text + str(mace_5yr_prop) + " %"
+            
+            if pred_5yr < 2.80:
+                label_risk = label.low_risk
+            if pred_5yr >= 2.80 and pred_5yr < 5.40:
+                label_risk = label.borderline_risk
+            if pred_5yr >= 5.40 and pred_5yr < 10.00:
+                label_risk = label.intermediate_risk
+            if pred_5yr >= 10.00:
+                label_risk = label.high_risk
+
+            text = f"""
+            {label.pred_text}{str(mace_5yr_prop)}% \n
+            {label_risk}
+            """
+
             st.success(text, icon="💔")
             
             fig = go.Figure([
@@ -481,7 +518,7 @@ elif (selected == "Model using Body Mass Index" or selected =="โมเดล�
         AF = st.selectbox(label.label_af, label.choice_yesno)
 
         if bmi_option == "ดัชนีมวลกาย (BMI)" or bmi_option == "Body Mass Index (BMI)":
-            BMI =  st.slider(label.label_bmi,0.00, 50.00, 25.00)
+            BMI =  st.slider(label.label_bmi,0.00, 75.00, 25.00)
         elif bmi_option == "ค่าน้ำหนักและส่วนสูง" or bmi_option == "Body Weight/Height":
             BW =  st.slider(label.label_bw,0.00, 200.00, 50.00)
             HT = st.slider(label.label_ht,0.00, 220.00, 150.00)
@@ -501,7 +538,20 @@ elif (selected == "Model using Body Mass Index" or selected =="โมเดล�
 
             pred, pred_5yr = prediction_survival(new_prediction, bmi_mace)
             mace_5yr_prop = format(pred_5yr,".2f")
-            text = label.pred_text + str(mace_5yr_prop) + " %"
+            
+            if pred_5yr < 2.80:
+                label_risk = label.low_risk
+            if pred_5yr >= 2.80 and pred_5yr < 5.40:
+                label_risk = label.borderline_risk
+            if pred_5yr >= 5.40 and pred_5yr < 10.00:
+                label_risk = label.intermediate_risk
+            if pred_5yr >= 10.00:
+                label_risk = label.high_risk
+
+            text = f"""
+            {label.pred_text}{str(mace_5yr_prop)}% \n
+            {label_risk}
+            """
             st.success(text, icon="💔")
             
             fig = go.Figure([
