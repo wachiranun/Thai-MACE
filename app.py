@@ -28,6 +28,7 @@ def prediction_survival(input, model):
         pred_5yr =  (1 - surv_func(60))*100
     return pred, pred_5yr
 
+
 # The station labels in language 'th' and 'en'
 stations = {"th": ['เลือกโมเดลที่ใช้ในการทำนายการเกิดเหตุการณ์ชนิดรุนแรงจากสาเหตุหัวใจและหลอดเลือด',
                    ['โมเดลทำนายการเกิดโรคโดยใช้ค่าไขมันคอเลสเตอรอลชนิดดี (non-HDL Cholestoral Level)','โมเดลทำนายการเกิดโรคโดยใช้ค่าไขมันคอเลสเตอรอลชนิดไม่ดี (LDL Cholestoral Level)',
@@ -88,7 +89,12 @@ stations = {"th": ['เลือกโมเดลที่ใช้ในกา
                     "กลุ่มเสี่ยงต่ำ (<2.8%)",
                     "กลุ่มเสี่ยงปานกลาง (2.8% to 5.3%)",
                     "กลุ่มเสี่ยง (5.4% to 9.9%)",
-                    "กลุ่มเสี่ยงสูง (≥10%)"], 
+                    "กลุ่มเสี่ยงสูง (≥10%)",
+                    "แอปพลิเคชั่นนี้เหมาะสำหรับผู้ป่วยอายุ 45-98 ปี ที่ยังไม่มีประวัติป่วยด้วยโรคหลอดเลือดหัวใจและสมอง และมีปัจจัยเสี่ยงของการเกิดโรคหลอดเลือดหัวใจและสมอง",
+                    "เปรียบเทียบโอกาสเสี่ยงในการเกิดโรคด้วยข้อมูลในอดีต",
+                    "การประเมินความเสี่ยงในการเกิดโรคด้วยข้อมูลในอดีต",
+                    "**(ความเสี่ยงในปัจจุบัน)**",
+                    "**(ความเสี่ยงในอดีต)**"], 
             "en":['Model Selection',       
                  ['Model using Non-HDL Cholestoral Level','Model using LDL Cholestoral Level','Model using Body Mass Index'],
                   'Unit of laboratory measurements',
@@ -147,7 +153,12 @@ stations = {"th": ['เลือกโมเดลที่ใช้ในกา
                     "Low-risk (<2.8%)",
                     "Borderline risk (2.8% to 5.3%)",
                     "Intermediate risk (5.4% to 9.9%)",
-                    "High risk (≥10%)"]}
+                    "High risk (≥10%)",
+                    "App should be used for patients (those without ASCVD) with multiple risk factors (MRFs) for ASCVD",
+                    "Comparing risk estimation using data from a previous visit",
+                    "Values at Previous Visit",
+                    "**(Current risk)**",
+                    "**(Previous risk)**"]}
 
 index_stations = ['label_model_select', 'choice_model_select',
                   'label_unit_op','choice_unit_op','label_kid_op','choice_kid_op',
@@ -157,10 +168,10 @@ index_stations = ['label_model_select', 'choice_model_select',
                   'label_lab', 'label_egfr', 'label_cr', 'label_tc', 'label_hdl', 'label_ldl', 'label_ldl_pred','label_nonhdl_pred', 'label_egfr_pred',
                   'label_med', 'label_htn_med', 'label_dm_med', 'label_insulin_med',
                   'label_pred','pred_text','yaxis_title', "xaxis_title", "title", "xtick",
-                  "text_caption","low_risk","borderline_risk","intermediate_risk","high_risk"]
+                  "text_caption","low_risk","borderline_risk","intermediate_risk","high_risk","precaution",
+                  "prev_data_use", "prev_data_head", "current_risk", "previous_risk"]
 
 df_stations = pd.DataFrame(data=stations, index = index_stations)
-
 
 # sidebar for navigation
 st.logo(logo, icon_image=logo)
@@ -180,6 +191,11 @@ with st.sidebar:
                     icons=['activity','heart', 'balloon'],
                     default_index=0)
 
+# Disabled prev_data expander as a default
+st.session_state.active_expander = True
+
+# Pre-caution before using
+st.warning(label.precaution, icon="⚠️")
 
 # Model using non-HDL cholestoral level
 if (selected == "Model using Non-HDL Cholestoral Level" or selected =='โมเดลทำนายการเกิดโรคโดยใช้ค่าไขมันคอเลสเตอรอลชนิดดี (non-HDL Cholestoral Level)'):
@@ -278,7 +294,6 @@ if (selected == "Model using Non-HDL Cholestoral Level" or selected =='โมเ
         INSULIN = st.selectbox(label.label_insulin_med, label.choice_yesno)
         
         if st.form_submit_button(label.label_pred):
-            
             input_tranfrom = transform_input(AGE,SEX,SMOKE,AF,TCOL,HDL,EGFR,ANY_HTN_MED,ANY_ORAL_DM,INSULIN)
             st.write(label.label_egfr_pred,  format(EGFR,".2f"))
             st.write(label.label_nonhdl_pred, format(input_tranfrom[4],".2f"))
@@ -329,7 +344,97 @@ if (selected == "Model using Non-HDL Cholestoral Level" or selected =='โมเ
             )
 
             event = st.plotly_chart(fig, on_select="rerun")
+            
+            active_expander = False
 
+            st.session_state.mace_5yr_prop = mace_5yr_prop
+            st.session_state.label_risk = label_risk
+            st.session_state.active_expander = active_expander
+
+    with st.popover(label.prev_data_use, disabled=st.session_state.active_expander):
+        st.write(label.prev_data_head)
+        with st.form('my_form_compare'):
+            st.write(label.label_demo)
+            AGE =  st.slider(label.label_age, 30 , 100, 45)
+            SEX = st.selectbox(label.label_sex, label.choice_sex)    
+            SMOKE = st.selectbox(label.label_smoker, label.choice_smoker)
+            AF = st.selectbox(label.label_af, label.choice_yesno)
+            st.write(label.label_lab)
+            if kidney_option == "ค่าการทำงานของไต (eGFR)"  or kidney_option == 'eGFR':
+                EGFR = st.slider(label.label_egfr, 0.00, 200.00, 50.00)
+                    
+            elif kidney_option == "ครีตินีน (Creatinine)" or kidney_option == "Creatinine":
+                if unit_option == "หน่วยวัด US" or unit_option == "US unit":
+                    unit = 'mg/dl'
+                    CR = st.slider(f'{label.label_cr}, ({unit})', 0.00, 15.00, 0.60)
+                elif unit_option == "หน่วยวัด SI" or unit_option == "SI unit":
+                    unit = 'mmol/L'
+                    CR_si = st.slider(f'{label.label_cr}, ({unit})', 0.000, 0.832, 0.033)
+                    CR = CR_si/0.0555
+                
+                if (SEX == "หญิง" or SEX == 'Female') and CR <= 0.7:
+                    COEF = -0.329
+                    EGFR = 144 * ((CR/0.7)**(COEF)) * (0.993 ** AGE)
+                elif (SEX == "หญิง" or SEX == 'Female') and CR > 0.7:
+                    COEF = -1.209
+                    EGFR = 144 * ((CR/0.7)**(COEF)) * (0.993 ** AGE)
+                elif (SEX == "ชาย" or SEX == 'Male') and CR <= 0.9:
+                    COEF = -0.411
+                    EGFR = 144 * ((CR/0.9)**(COEF)) * (0.993 ** AGE)
+                elif (SEX == "ชาย" or SEX == 'Male') and CR > 0.9:
+                    COEF = -1.209
+                    EGFR = 144 * ((CR/0.9)**(COEF)) * (0.993 ** AGE)
+        
+
+            if unit_option == "หน่วยวัด US" or unit_option == "US unit":
+                unit = 'mg/dl'
+                TCOL = st.slider(f'{label.label_tc}, ({unit})',0, 600, 150)
+                HDL = st.slider(f'{label.label_hdl}, ({unit})',0, 200, 50)
+            elif unit_option == "หน่วยวัด SI" or unit_option == "SI unit":
+                unit = 'mmol/L'
+                TCOL_si = st.slider(f'{label.label_tc}, ({unit})',0.000, 33.30, 8.000)
+                HDL_si = st.slider(f'{label.label_hdl}, ({unit})',0.000, 11.10, 3.300)
+                TCOL = TCOL_si/0.0555
+                HDL = HDL_si/0.0555
+
+            st.write(label.label_med)
+            ANY_HTN_MED = st.selectbox(label.label_htn_med, label.choice_yesno)
+            ANY_ORAL_DM = st.selectbox(label.label_dm_med, label.choice_yesno)
+            INSULIN = st.selectbox(label.label_insulin_med, label.choice_yesno)
+            
+            if st.form_submit_button(label.prev_data_use):
+                
+                input_tranfrom2 = transform_input(AGE,SEX,SMOKE,AF,TCOL,HDL,EGFR,ANY_HTN_MED,ANY_ORAL_DM,INSULIN)
+                st.write(label.label_egfr_pred,  format(EGFR,".2f"))
+                st.write(label.label_nonhdl_pred, format(input_tranfrom2[4],".2f"))
+                new_prediction2 = pd.DataFrame.from_dict({1:input_tranfrom2}, columns=["AGE","SEX","SMOKE","AF","Non_HDL","EGFR","ANY_HTN_MED","ANY_ORAL_DM","INSULIN"], orient='index')
+
+                pred2, pred_5yr2 = prediction_survival(new_prediction2, non_hdl_mace)
+                mace_5yr_prop2 = format(pred_5yr2,".2f")
+
+                if pred_5yr2 < 2.80:
+                    label_risk2 = label.low_risk
+                if pred_5yr2 >= 2.80 and pred_5yr2 < 5.40:
+                    label_risk2 = label.borderline_risk
+                if pred_5yr2 >= 5.40 and pred_5yr2 < 10.00:
+                    label_risk2 = label.intermediate_risk
+                if pred_5yr2 >= 10.00:
+                    label_risk2 = label.high_risk
+
+                text2 = f""" {label.previous_risk}
+                {label.pred_text} \n
+                {str(mace_5yr_prop2)}%   {label_risk2} 
+                """
+                
+                text3 = f""" {label.current_risk}
+                {label.pred_text} \n
+                {str(st.session_state.mace_5yr_prop)}%   {st.session_state.label_risk}
+                """
+
+                st.success(text3)
+                st.warning(text2)
+
+        
 
 # Model using LDL cholestoral level
 elif (selected == "Model using LDL Cholestoral Level" or selected == "โมเดลทำนายการเกิดโรคโดยใช้ค่าไขมันคอเลสเตอรอลชนิดไม่ดี (LDL Cholestoral Level)"):
@@ -480,6 +585,94 @@ elif (selected == "Model using LDL Cholestoral Level" or selected == "โมเ�
 
             event = st.plotly_chart(fig, on_select="rerun")
 
+            active_expander = False
+
+            st.session_state.mace_5yr_prop = mace_5yr_prop
+            st.session_state.label_risk = label_risk
+            st.session_state.active_expander = active_expander
+
+    with st.popover(label.prev_data_use, disabled=st.session_state.active_expander):
+        st.write(label.prev_data_head)
+        with st.form('my_form_compare'):
+            st.write(label.label_demo)
+            AGE =  st.slider(label.label_age, 30 , 100, 45)
+            SEX = st.selectbox(label.label_sex, label.choice_sex)    
+            SMOKE = st.selectbox(label.label_smoker, label.choice_smoker)
+            AF = st.selectbox(label.label_af, label.choice_yesno)
+            st.write(label.label_lab)
+            if kidney_option == "ค่าการทำงานของไต (eGFR)"  or kidney_option == 'eGFR':
+                EGFR = st.slider(label.label_egfr, 0.00, 200.00, 50.00)
+                    
+            elif kidney_option == "ครีตินีน (Creatinine)" or kidney_option == "Creatinine":
+                if unit_option == "หน่วยวัด US" or unit_option == "US unit":
+                    unit = 'mg/dl'
+                    CR = st.slider(f'{label.label_cr}, ({unit})', 0.00, 15.00, 0.60)
+                elif unit_option == "หน่วยวัด SI" or unit_option == "SI unit":
+                    unit = 'mmol/L'
+                    CR_si = st.slider(f'{label.label_cr}, ({unit})', 0.000, 0.832, 0.033)
+                    CR = CR_si/0.0555
+                
+                if (SEX == "หญิง" or SEX == 'Female') and CR <= 0.7:
+                    COEF = -0.329
+                    EGFR = 144 * ((CR/0.7)**(COEF)) * (0.993 ** AGE)
+                elif (SEX == "หญิง" or SEX == 'Female') and CR > 0.7:
+                    COEF = -1.209
+                    EGFR = 144 * ((CR/0.7)**(COEF)) * (0.993 ** AGE)
+                elif (SEX == "ชาย" or SEX == 'Male') and CR <= 0.9:
+                    COEF = -0.411
+                    EGFR = 144 * ((CR/0.9)**(COEF)) * (0.993 ** AGE)
+                elif (SEX == "ชาย" or SEX == 'Male') and CR > 0.9:
+                    COEF = -1.209
+                    EGFR = 144 * ((CR/0.9)**(COEF)) * (0.993 ** AGE)
+        
+
+            if unit_option == "หน่วยวัด US" or unit_option == "US unit":
+                unit = 'mg/dl'
+                LDL = st.slider(f'{label.label_ldl}, ({unit})',0, 600, 150)
+            elif unit_option == "หน่วยวัด SI" or unit_option == "SI unit":
+                unit = 'mmol/L'
+                LDL_si = st.slider(f'{label.label_ldl}, ({unit})',0.000, 33.30, 8.324)
+                LDL = LDL_si/0.0555
+
+
+            st.write(label.label_med)
+            ANY_HTN_MED = st.selectbox(label.label_htn_med, label.choice_yesno)
+            ANY_ORAL_DM = st.selectbox(label.label_dm_med, label.choice_yesno)
+            INSULIN = st.selectbox(label.label_insulin_med, label.choice_yesno)
+            
+            if st.form_submit_button(label.prev_data_use):
+                
+                input_tranfrom2 = transform_input_ldl(AGE,SEX,SMOKE,AF,LDL,EGFR,ANY_HTN_MED,ANY_ORAL_DM,INSULIN)
+                st.write(label.label_egfr_pred, format(EGFR, ".2f"))
+                st.write(label.label_ldl_pred, format(input_tranfrom2[4],".2f"))
+
+                new_prediction2 = pd.DataFrame.from_dict({1:input_tranfrom2}, columns=["AGE","SEX","SMOKE","AF","LDL","EGFR","ANY_HTN_MED","ANY_ORAL_DM","INSULIN"], orient='index')
+
+                pred2, pred_5yr2 = prediction_survival(new_prediction2, ldl_mace)
+                mace_5yr_prop2 = format(pred_5yr2,".2f")
+
+                if pred_5yr2 < 2.80:
+                    label_risk2 = label.low_risk
+                if pred_5yr2 >= 2.80 and pred_5yr2 < 5.40:
+                    label_risk2 = label.borderline_risk
+                if pred_5yr2 >= 5.40 and pred_5yr2 < 10.00:
+                    label_risk2 = label.intermediate_risk
+                if pred_5yr2 >= 10.00:
+                    label_risk2 = label.high_risk
+
+                text2 = f""" {label.previous_risk}
+                {label.pred_text} \n
+                {str(mace_5yr_prop2)}%   {label_risk2} 
+                """
+                
+                text3 = f""" {label.current_risk}
+                {label.pred_text} \n
+                {str(st.session_state.mace_5yr_prop)}%   {st.session_state.label_risk}
+                """
+                
+                st.success(text3)
+                st.warning(text2)
+
 # Model using BMI
 elif (selected == "Model using Body Mass Index" or selected =="โมเดลทำนายการเกิดโรคโดยใช้ดัชนีมวลกาย (Body Mass Index)"):
     
@@ -595,6 +788,65 @@ elif (selected == "Model using Body Mass Index" or selected =="โมเดล�
 
             event = st.plotly_chart(fig, on_select="rerun")
 
+            active_expander = False
+
+            st.session_state.mace_5yr_prop = mace_5yr_prop
+            st.session_state.label_risk = label_risk
+            st.session_state.active_expander = active_expander
+
+    with st.popover(label.prev_data_use, disabled=st.session_state.active_expander):
+        st.write(label.prev_data_head)
+        with st.form('my_form_compare'):
+            st.write(label.label_demo)
+            AGE =  st.slider(label.label_age, 30 , 100, 45)
+            SEX = st.selectbox(label.label_sex, label.choice_sex)    
+            SMOKE = st.selectbox(label.label_smoker, label.choice_smoker)
+            AF = st.selectbox(label.label_af, label.choice_yesno)
+            st.write(label.label_lab)
+
+            if bmi_option == "ดัชนีมวลกาย (BMI)" or bmi_option == "Body Mass Index (BMI)":
+                BMI =  st.slider(label.label_bmi,0.00, 75.00, 25.00)
+            elif bmi_option == "ค่าน้ำหนักและส่วนสูง" or bmi_option == "Body Weight/Height":
+                BW =  st.slider(label.label_bw,0.00, 200.00, 50.00)
+                HT = st.slider(label.label_ht,0.00, 220.00, 150.00)
+                BMI = BW/((HT/100)**2)
+        
+            st.write(label.label_med)
+            ANY_HTN_MED = st.selectbox(label.label_htn_med, label.choice_yesno)
+            ANY_ORAL_DM = st.selectbox(label.label_dm_med, label.choice_yesno)
+            INSULIN = st.selectbox(label.label_insulin_med, label.choice_yesno)
+
+            if st.form_submit_button(label.prev_data_use):
+                
+                input_tranfrom2 = transform_input_bmi(AGE,SEX,SMOKE,AF,BMI,ANY_HTN_MED,ANY_ORAL_DM,INSULIN)
+                st.write(label.label_bmi_pred, format(input_tranfrom2[4],".2f"))
+
+                new_prediction2 = pd.DataFrame.from_dict({1:input_tranfrom2}, columns=["AGE","SEX","SMOKE","AF","BMI","ANY_HTN_MED","ANY_ORAL_DM","INSULIN"], orient='index')
+
+                pred2, pred_5yr2 = prediction_survival(new_prediction2, bmi_mace)
+                mace_5yr_prop2 = format(pred_5yr2,".2f")
+
+                if pred_5yr2 < 2.80:
+                    label_risk2 = label.low_risk
+                if pred_5yr2 >= 2.80 and pred_5yr2 < 5.40:
+                    label_risk2 = label.borderline_risk
+                if pred_5yr2 >= 5.40 and pred_5yr2 < 10.00:
+                    label_risk2 = label.intermediate_risk
+                if pred_5yr2 >= 10.00:
+                    label_risk2 = label.high_risk
+
+                text2 = f""" {label.previous_risk}
+                {label.pred_text} \n
+                {str(mace_5yr_prop2)}%   {label_risk2} 
+                """
+                
+                text3 = f""" {label.current_risk}
+                {label.pred_text} \n
+                {str(st.session_state.mace_5yr_prop)}%   {st.session_state.label_risk}
+                """
+                
+                st.success(text3)
+                st.warning(text2)
 
 st.caption(label.text_caption)
 
