@@ -76,8 +76,8 @@ stations = {"th": ['เลือกโมเดลที่ใช้ในกา
                     :orange[กลุ่มเสี่ยง (5.4% to 9.9%)] \n
                     :red[กลุ่มเสี่ยงสูง (≥10%)] \n
                     แนะนำให้ใช้โมเดลเพื่อทำนายการเกิดเหตุการณ์ชนิดรุนแรงจากสาเหตุหัวใจและหลอดเลือดใน 5 ปี \n
-                    สำหรับ _กลุ่มผู้ป่วยอายุ 45-98 ปี ที่มีปัจจัยเสี่ยงของการเกิดโรคหลอดเลือดหัวใจและสมองมากกว่าเท่ากับ 3 ข้อ_
-                    ประกอบได้ด้วยปัจจัยเสี่ยงดังนี้ \n
+                    _สำหรับกลุ่มผู้ป่วยอายุ 45-98 ปี ที่ยังไม่มีประวัติป่วยด้วยโรคหลอดเลือดหัวใจและสมอง_ 
+                    _และมีปัจจัยเสี่ยงของการเกิดโรคหลอดเลือดหัวใจและสมองอย่างน้อย 3 ข้อ_ ประกอบได้ด้วยปัจจัยเสี่ยงดังนี้ \n
                     1. เพศชายอายุ >55 ปี หรือเพศหญิงอายุ >65 ปี\n 
                     2. เป็นโรคเบาหวาน หรือมีภาวะระดับน้ำตาลในเลือดขณะอดอาหารผิดปกติ\n
                     3. เป็นโรคความดันโลหิตสูง \n
@@ -135,8 +135,8 @@ stations = {"th": ['เลือกโมเดลที่ใช้ในกา
                     :orange[Intermediate risk (5.4% to 9.9%)] \n
                     :red[High risk (≥10%)] \n
                     Recommended to use the models to predict 5-year MACE probability \n
-                    for _patients age 45–98 with multiple risk factors (MRFs) for ASCVD_\n
-                    MRFs were characterized by the presence of a minimum of three risk factors for atherosclerosis \n
+                    _for patients with non-estrablised ASCVD age 45–98 with multiple risk factors (MRFs) for ASCVD_\n
+                    MRFs were characterized by the presence of a minimum of 3 risk factors for atherosclerosis \n
                     1. Males >55 years or Females >65 years\n 
                     2. Diabetes mellitus (DM) or Impaired fasting glucose\n
                     3. Hypertension \n
