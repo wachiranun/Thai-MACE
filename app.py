@@ -72,10 +72,10 @@ stations = {"th": ['เลือกโมเดลที่ใช้ในกา
                     ['ปัจจุบัน','1 ปี', '2 ปี', '3 ปี', '4 ปี', '5 ปี'],
                     """
                     **การแบ่งกลุ่มผู้ป่วยตามความเสี่ยงในการเกิดเหตุการณ์ชนิดรุนแรงจากสาเหตุหัวใจและหลอดเลือดใน 5 ปี \n
-                    :green[กลุ่มเสี่ยงต่ำ (<2.8%)] \n
-                    กลุ่มเสี่ยงน้อย (2.8% to 5.3%) \n
-                    :orange[กลุ่มเสี่ยงปานกลาง (5.4% to 9.9%)] \n
-                    :red[กลุ่มเสี่ยงสูง (≥10%)] \n
+                    :green[กลุ่มเสี่ยงต่ำ (น้อยกว่า 2.8%)] \n
+                    กลุ่มเสี่ยงน้อย (2.8% ถึง 5.3%) \n
+                    :orange[กลุ่มเสี่ยงปานกลาง (5.4% ถึง 9.9%)] \n
+                    :red[กลุ่มเสี่ยงสูง (มากกว่าเท่ากับ 10%)] \n
                     แนะนำให้ใช้โมเดลเพื่อทำนายการเกิดเหตุการณ์ชนิดรุนแรงจากสาเหตุหัวใจและหลอดเลือดใน 5 ปี \n
                     _สำหรับกลุ่มผู้ป่วยอายุ 45-98 ปี ที่ยังไม่มีประวัติป่วยด้วยโรคหลอดเลือดหัวใจและสมอง_ \n
                     _และมีปัจจัยเสี่ยงของการเกิดโรคหลอดเลือดหัวใจและสมองอย่างน้อย 3 ข้อ_ ประกอบได้ด้วยปัจจัยเสี่ยงดังนี้ \n
@@ -86,10 +86,10 @@ stations = {"th": ['เลือกโมเดลที่ใช้ในกา
                     5. โรคไตเรื้อรังที่ตรวจพบโปรตีนรั่วในปัสสาวะ (proteinuria +1) หรือมีค่าการทำงานของไต (eGFR) ต่ำกว่า 60 mL/min/1.73m2\n
                     6. มีประวัติคนในครอบครัวเป็นโรคหลอดเลือดหัวใจและสมองก่อนวัยอันควร \n
                     """,
-                    "กลุ่มเสี่ยงต่ำ (<2.8%)",
-                    "กลุ่มเสี่ยงน้อย (2.8% to 5.3%)",
-                    "กลุ่มเสี่ยงปานกลาง (5.4% to 9.9%)",
-                    "กลุ่มเสี่ยงสูง (≥10%)",
+                    "กลุ่มเสี่ยงต่ำ (น้อยกว่า 2.8%)",
+                    "กลุ่มเสี่ยงน้อย (2.8% ถึง 5.3%)",
+                    "กลุ่มเสี่ยงปานกลาง (5.4% ถึง 9.9%)",
+                    "กลุ่มเสี่ยงสูง (มากกว่าเท่ากับ 10%)",
                     "แอปพลิเคชั่นนี้เหมาะสำหรับผู้ป่วยอายุ 45-98 ปี ที่ยังไม่มีประวัติป่วยด้วยโรคหลอดเลือดหัวใจและสมอง และมีปัจจัยเสี่ยงของการเกิดโรคหลอดเลือดหัวใจและสมอง",
                     "เปรียบเทียบโอกาสเสี่ยงในการเกิดโรคด้วยข้อมูลในอดีต",
                     "การประเมินความเสี่ยงในการเกิดโรคด้วยข้อมูลในอดีต",
@@ -143,10 +143,10 @@ stations = {"th": ['เลือกโมเดลที่ใช้ในกา
                   ['Baseline','1 year', '2 year', '3 year', '4 year', '5 year'],
                   """
                   **5-year MACE probability is categorized as: \n
-                    :green[Low-risk (<2.8%)] \n
+                    :green[Low-risk (< 2.8%)] \n
                     Borderline risk (2.8% to 5.3%) \n
                     :orange[Intermediate risk (5.4% to 9.9%)] \n
-                    :red[High risk (≥10%)] \n
+                    :red[High risk (≥ 10%)] \n
                     Recommended to use the models to predict 5-year MACE probability \n
                     _for patients with non-estrablised ASCVD age 45–98 with multiple risk factors (MRFs) for ASCVD_\n
                     MRFs were characterized by the presence of a minimum of 3 risk factors for atherosclerosis \n
@@ -157,10 +157,10 @@ stations = {"th": ['เลือกโมเดลที่ใช้ในกา
                     5. Chronic kidney disease (proteinuria+1 or estimated glomerular filtration rate less than 60 mL/min/1.73m2)\n
                     6. Family history of premature atherosclerotic cardiovascular diseases\n
                     """,
-                    "Low-risk (<2.8%)",
+                    "Low-risk (< 2.8%)",
                     "Borderline risk (2.8% to 5.3%)",
                     "Intermediate risk (5.4% to 9.9%)",
-                    "High risk (≥10%)",
+                    "High risk (≥ 10%)",
                     "App should be used for patients (those without ASCVD) with multiple risk factors (MRFs) for ASCVD",
                     "Comparing risk estimation using data from a previous visit",
                     "Values at Previous Visit",
