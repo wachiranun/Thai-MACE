@@ -96,11 +96,11 @@ stations = {"th": ['เลือกโมเดลที่ใช้ในกา
                     "**(ความเสี่ยงในปัจจุบัน)**",
                     "**(ความเสี่ยงในอดีต)**",
                     """
-                    **หมายเหตุ**
-                    *ผลลัพธ์ที่ได้เป็นการประเมินความเสี่ยงต่อการเกิดเหตุการณ์ชนิดรุนแรงจากสาเหตุหัวใจและหลอดเลือดใน 5 ปีข้างหน้า \n
-                    *ผลการประเมินและคำแนะนำที่ได้รับจากโปรแกรมนี้ไม่สามารถใช้แทนการตัดสินใจของแพทย์ได้ \n
-                    *การตรวจรักษาเพิ่มเติมหรือการให้ยารักษาขึ้นอยู่กับดุลยพินิจของแพทย์และการปรึกษากันระหว่างแพทย์และตัวท่าน \n
-                    *ผลการประเมินนี้ห้ามนำไปใช้อ้างอิงในการค้า เช่น การทำประกันชีวิต \n
+                    **หมายเหตุ**\n
+                    1. ผลลัพธ์ที่ได้เป็นการประเมินความเสี่ยงต่อการเกิดเหตุการณ์ชนิดรุนแรงจากสาเหตุหัวใจและหลอดเลือดใน 5 ปีข้างหน้า \n
+                    2. ผลการประเมินและคำแนะนำที่ได้รับจากโปรแกรมนี้ไม่สามารถใช้แทนการตัดสินใจของแพทย์ได้ \n
+                    3. การตรวจรักษาเพิ่มเติมหรือการให้ยารักษาขึ้นอยู่กับดุลยพินิจของแพทย์และการปรึกษากันระหว่างแพทย์และตัวท่าน \n
+                    4. ผลการประเมินนี้ห้ามนำไปใช้อ้างอิงในการค้า เช่น การทำประกันชีวิต \n
                     """], 
             "en":['Model Selection',       
                  ['Model using Non-HDL Cholestoral Level','Model using LDL Cholestoral Level','Model using Body Mass Index'],
@@ -167,11 +167,11 @@ stations = {"th": ['เลือกโมเดลที่ใช้ในกา
                     "**(Current risk)**",
                     "**(Previous risk)**",
                     """
-                    **Disclaimer**
-                    *The results provided are a prediction of the risk of major cardiovascular events occurring within the next 5 years \n
-                    *The evaluation and recommendations provided by this app cannot replace a doctor's judgment. \n
-                    *Further examinations or treatments, including medication, depend on the decision of your physician and discussion between you and your physician. \n
-                    *The use of the app's assessment results is prohibited for commercial purposes, such as health insurance applications. \n
+                    **Disclaimer** \n
+                    1. The results provided are a prediction of the risk of major cardiovascular events occurring within the next 5 years \n
+                    2. The evaluation and recommendations provided by this app cannot replace a doctor's judgment. \n
+                    3. Further examinations or treatments, including medication, depend on the decision of your physician and discussion between you and your physician. \n
+                    4. The use of the app's assessment results is prohibited for commercial purposes, such as health insurance applications. \n
                     """]}
 
 index_stations = ['label_model_select', 'choice_model_select',
