@@ -94,7 +94,14 @@ stations = {"th": ['เลือกโมเดลที่ใช้ในกา
                     "เปรียบเทียบโอกาสเสี่ยงในการเกิดโรคด้วยข้อมูลในอดีต",
                     "การประเมินความเสี่ยงในการเกิดโรคด้วยข้อมูลในอดีต",
                     "**(ความเสี่ยงในปัจจุบัน)**",
-                    "**(ความเสี่ยงในอดีต)**"], 
+                    "**(ความเสี่ยงในอดีต)**",
+                    """
+                    **หมายเหตุ**
+                    *ผลลัพธ์ที่ได้เป็นการประเมินความเสี่ยงต่อการเกิดเหตุการณ์ชนิดรุนแรงจากสาเหตุหัวใจและหลอดเลือดใน 5 ปีข้างหน้า \n
+                    *ผลการประเมินและคำแนะนำที่ได้รับจากโปรแกรมนี้ไม่สามารถใช้แทนการตัดสินใจของแพทย์ได้ \n
+                    *การตรวจรักษาเพิ่มเติมหรือการให้ยารักษาขึ้นอยู่กับดุลยพินิจของแพทย์และการปรึกษากันระหว่างแพทย์และตัวท่าน \n
+                    *ผลการประเมินนี้ห้ามนำไปใช้อ้างอิงในการค้า เช่น การทำประกันชีวิต \n
+                    """], 
             "en":['Model Selection',       
                  ['Model using Non-HDL Cholestoral Level','Model using LDL Cholestoral Level','Model using Body Mass Index'],
                   'Unit of laboratory measurements',
@@ -158,7 +165,14 @@ stations = {"th": ['เลือกโมเดลที่ใช้ในกา
                     "Comparing risk estimation using data from a previous visit",
                     "Values at Previous Visit",
                     "**(Current risk)**",
-                    "**(Previous risk)**"]}
+                    "**(Previous risk)**",
+                    """
+                    **Disclaimer**
+                    *The results provided are a prediction of the risk of major cardiovascular events occurring within the next 5 years \n
+                    *The evaluation and recommendations provided by this app cannot replace a doctor's judgment. \n
+                    *Further examinations or treatments, including medication, depend on the decision of your physician and discussion between you and your physician. \n
+                    *The use of the app's assessment results is prohibited for commercial purposes, such as health insurance applications. \n
+                    """]}
 
 index_stations = ['label_model_select', 'choice_model_select',
                   'label_unit_op','choice_unit_op','label_kid_op','choice_kid_op',
@@ -169,7 +183,7 @@ index_stations = ['label_model_select', 'choice_model_select',
                   'label_med', 'label_htn_med', 'label_dm_med', 'label_insulin_med',
                   'label_pred','pred_text','yaxis_title', "xaxis_title", "title", "xtick",
                   "text_caption","low_risk","borderline_risk","intermediate_risk","high_risk","precaution",
-                  "prev_data_use", "prev_data_head", "current_risk", "previous_risk"]
+                  "prev_data_use", "prev_data_head", "current_risk", "previous_risk", "disclaimer"]
 
 df_stations = pd.DataFrame(data=stations, index = index_stations)
 
@@ -344,6 +358,8 @@ if (selected == "Model using Non-HDL Cholestoral Level" or selected =='โมเ
             )
 
             event = st.plotly_chart(fig, on_select="rerun")
+
+            st.error(label.disclaimer, icon="🚨")
             
             active_expander = False
 
@@ -433,6 +449,7 @@ if (selected == "Model using Non-HDL Cholestoral Level" or selected =='โมเ
 
                 st.success(text3)
                 st.warning(text2)
+                st.error(label.disclaimer, icon="🚨")
 
         
 
@@ -585,6 +602,8 @@ elif (selected == "Model using LDL Cholestoral Level" or selected == "โมเ�
 
             event = st.plotly_chart(fig, on_select="rerun")
 
+            st.error(label.disclaimer, icon="🚨")
+
             active_expander = False
 
             st.session_state.mace_5yr_prop = mace_5yr_prop
@@ -672,6 +691,7 @@ elif (selected == "Model using LDL Cholestoral Level" or selected == "โมเ�
                 
                 st.success(text3)
                 st.warning(text2)
+                st.error(label.disclaimer, icon="🚨")
 
 # Model using BMI
 elif (selected == "Model using Body Mass Index" or selected =="โมเดลทำนายการเกิดโรคโดยใช้ดัชนีมวลกาย (Body Mass Index)"):
@@ -788,6 +808,8 @@ elif (selected == "Model using Body Mass Index" or selected =="โมเดล�
 
             event = st.plotly_chart(fig, on_select="rerun")
 
+            st.error(label.disclaimer, icon="🚨")
+
             active_expander = False
 
             st.session_state.mace_5yr_prop = mace_5yr_prop
@@ -847,6 +869,7 @@ elif (selected == "Model using Body Mass Index" or selected =="โมเดล�
                 
                 st.success(text3)
                 st.warning(text2)
+                st.error(label.disclaimer, icon="🚨")
 
 st.caption(label.text_caption)
 
