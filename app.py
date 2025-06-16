@@ -11,7 +11,7 @@ with open('mace_non_ascvd_model.pkl', 'rb') as f:
     non_hdl_mace, ldl_mace, bmi_mace = pickle.load(f)
 
 image = Image.open('./images/mace_app_banner.png')
-st.image(image, use_column_width ="always" )
+st.image(image, use_container_width ="always" )
 
 logo = './images/slidebar_button.png'
 
